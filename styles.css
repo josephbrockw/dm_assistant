@@ -25,6 +25,20 @@ input[type="text"], textarea, select {
 	box-sizing: border-box;
 }
 
+input[type="password"] {
+	width: calc(100% - 22px); /* Adjust width to account for padding and border */
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 20px;
+	background-color: #3c3836; /* Darker background for input fields */
+	color: #dcdccc; /* Light text for contrast */
+	border: 1px solid #7c6f64; /* Soft border color */
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-family: 'Georgia', serif; /* Optional: Adjust font to match theme */
+}
+
+
 input[type="checkbox"], input[type="radio"] {
 	margin-right: 10px;
 }

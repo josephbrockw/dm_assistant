@@ -24,6 +24,24 @@ document.getElementById('save').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	// Load and display current API Key
+	chrome.storage.sync.get('apiKey', function (data) {
+		if (data.apiKey) {
+			document.getElementById('apiKey').value = data.apiKey;
+		}
+	});
+	
+	// Load and display any previously saved background information
+	chrome.storage.sync.get('backgroundInfo', function (data) {
+		if (data.backgroundInfo) {
+			document.getElementById('backgroundInfo').value = data.backgroundInfo;
+		}
+	});
+	
+	// Get the clearHistory button
 	var clearHistoryButton = document.getElementById('clearHistory');
 	clearHistoryButton.addEventListener('click', function () {
 		// Clear the message history from storage
@@ -36,24 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		}
 	});
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-	// Load and display current API Key
-	chrome.storage.sync.get('apiKey', function (data) {
-		if (data.apiKey) {
-			document.getElementById('apiKey').value = data.apiKey;
-		}
-	});
-
-	// Load and display any previously saved background information
-	chrome.storage.sync.get('backgroundInfo', function (data) {
-		if (data.backgroundInfo) {
-			document.getElementById('backgroundInfo').value = data.backgroundInfo;
-		}
-	});
-
-	// Save the background information
+	// Save the changes 
 	document.getElementById('save').addEventListener('click', function () {
 		var backgroundInfo = document.getElementById('backgroundInfo').value;
 		chrome.storage.sync.set({
