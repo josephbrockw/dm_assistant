@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Append a message to the history and save it
 function appendMessageAndSave(role, content) {
+	displayMessage(role, content);
 	chrome.storage.sync.get(['messageHistory', 'game'], function(result) {
 		const messageHistory = result.messageHistory || [];
 		const newMessage = { role, content };
@@ -168,7 +169,7 @@ function appendMessageAndSave(role, content) {
 		if (messageHistory.length === 0) {
 			messageHistory.unshift({
 					role: "system",
-					content: `You are the Dungeon Master assistant using ${game}. Make responses bullet point lists with as few words as possible for easy reading.`
+					content: `You are the Dungeon Master assistant using ${game}. Make responses bullet point lists with as few words as possible for easy reading formatted in HTML.`
 			});
 		}
 
@@ -181,6 +182,24 @@ function appendMessageAndSave(role, content) {
 		messageHistory.push(newMessage);
 		chrome.storage.sync.set({ 'messageHistory': messageHistory });
 	});
+}
+
+function displayMessage(role, content) {
+	const container = document.getElementById('historyContainer');
+	const card = document.createElement('div');
+	card.classList.add('card');
+	
+	// Depending on the role, format the card content
+	if (role === 'user') {
+			card.innerHTML = `<div class="query">User: ${content}</div>`;
+	} else if (role === 'assistant') {
+			card.innerHTML = `<div class="response">Assistant: ${content}</div>`;
+	}
+
+	container.appendChild(card);
+
+	// Scroll to the bottom of the container to show the latest message
+	container.scrollTop = container.scrollHeight;
 }
 
 function makeApiCall(query, isContinuation = false) {
@@ -203,15 +222,15 @@ function makeApiCall(query, isContinuation = false) {
 		.then(response => response.json())
 		.then(data => {
 			const responseContent = data.choices[0].message.content;
-			document.getElementById('response').innerText += "\n" + responseContent;
 			appendMessageAndSave('assistant', responseContent);
+
 
 			// Update the "More" button visibility based on finish_reason
 			document.getElementById('more').style.display = data.choices[0].finish_reason === 'length' ? 'block' : 'none';
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			document.getElementById('response').innerText = 'Error fetch the response. Please check your API Key and internet connection.';
+			displayMessage("error", 'Error fetch the response. Please check your API Key and internet connection.');
 		});
 	});
 }
